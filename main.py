@@ -196,5 +196,3 @@ class AplikasiKasir:
 
         btn_simpan = tk.Button(form, text="Simpan / Tambah Stok", bg="#27ae60", fg="white", font=("Arial", 10, "bold"), command=simpan_stok_db)
         btn_simpan.pack(fill=tk.X)
-
-    
