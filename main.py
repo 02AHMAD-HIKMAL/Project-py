@@ -25,7 +25,7 @@ def inisialisasi_db():
             ("A02", "Minyak Goreng 1L", 18000, 30),
             ("A03", "Gula Pasir 1kg", 16000, 25),
             ("A04", "Telur 1kg", 28000, 15),
-            ("A05", "Mie Instan (Dus)", 110000, 10)
+            ("A05", "Mie Instan ( 1 Dus)", 110000, 10)
         ]
         cursor.executemany("INSERT INTO produk VALUES (?, ?, ?, ?)", data_awal)
         conn.commit()
@@ -54,6 +54,7 @@ class AplikasiKasirModern:
         header_frame = tk.Frame(root, bg=self.warna_header, pady=15)
         header_frame.pack(fill=tk.X)
 
+
         lbl_title = tk.Label(header_frame, text="TOKO MALLCELL", font=("Segoe UI", 18, "bold"), bg=self.warna_header, fg="white")
         lbl_title.pack()
         lbl_subtitle = tk.Label(header_frame, text="Kasir Pintar", font=("Segoe UI", 10), bg=self.warna_header, fg="#94a3b8")
@@ -70,6 +71,7 @@ class AplikasiKasirModern:
         lbl_katalog = tk.Label(left_frame, text="Katalog Produk", font=("Segoe UI", 12, "bold"), bg=self.warna_bg_utama, fg="#334155")
         lbl_katalog.pack(anchor="w", pady=(0, 5))
 
+
         style = ttk.Style()
         style.theme_use("clam")
         style.configure("Treeview.Heading", font=("Segoe UI", 10, "bold"), background="#e2e8f0", foreground="#1e293b")
@@ -77,6 +79,7 @@ class AplikasiKasirModern:
 
         tree_scroll = ttk.Scrollbar(left_frame)
         tree_scroll.pack(side=tk.RIGHT, fill=tk.Y)
+
 
         self.tree_produk = ttk.Treeview(left_frame, columns=("Kode", "Nama", "Harga", "Stok"), show="headings", yscrollcommand=tree_scroll.set, height=14)
         self.tree_produk.heading("Kode", text="KODE")
@@ -127,6 +130,8 @@ class AplikasiKasirModern:
         btn_hapus_item = tk.Button(right_frame, text="Hapus Item Terpilih", bg=self.warna_danger, fg="white", font=("Segoe UI", 9, "bold"), relief="flat", pady=4, cursor="hand2", command=self.hapus_item_keranjang)
         btn_hapus_item.pack(fill=tk.X, pady=(0, 10))
 
+
+
         # Panel Pembayaran Modern
         pay_panel = tk.Frame(right_frame, bg="#f1f5f9", padx=12, pady=12)
         pay_panel.pack(fill=tk.X, pady=5)
@@ -148,6 +153,7 @@ class AplikasiKasirModern:
 
         self.muat_data_produk()
 
+
     def muat_data_produk(self):
         for item in self.tree_produk.get_children():
             self.tree_produk.delete(item)
@@ -158,6 +164,7 @@ class AplikasiKasirModern:
         for baris in cursor.fetchall():
             self.tree_produk.insert("", tk.END, values=(baris[0], baris[1], f"Rp {baris[2]:,}", baris[3]))
         conn.close()
+
 
     def buka_jendela_stok(self):
         jendela_stok = tk.Toplevel(self.root)
@@ -171,21 +178,27 @@ class AplikasiKasirModern:
         form = tk.Frame(jendela_stok, bg="white", padx=20)
         form.pack(fill=tk.BOTH, expand=True)
 
+
         tk.Label(form, text="Kode Barang (Unik):", font=("Segoe UI", 9, "bold"), bg="white").pack(anchor="w")
         e_kode = tk.Entry(form, font=("Segoe UI", 11), relief="solid", bd=1)
         e_kode.pack(fill=tk.X, pady=(2, 10), ipady=3)
+
 
         tk.Label(form, text="Nama Barang:", font=("Segoe UI", 9, "bold"), bg="white").pack(anchor="w")
         e_nama = tk.Entry(form, font=("Segoe UI", 11), relief="solid", bd=1)
         e_nama.pack(fill=tk.X, pady=(2, 10), ipady=3)
 
+
         tk.Label(form, text="Harga Satuan (Rp):", font=("Segoe UI", 9, "bold"), bg="white").pack(anchor="w")
         e_harga = tk.Entry(form, font=("Segoe UI", 11), relief="solid", bd=1)
         e_harga.pack(fill=tk.X, pady=(2, 10), ipady=3)
 
+
         tk.Label(form, text="Jumlah Stok Baru / Tambahan:", font=("Segoe UI", 9, "bold"), bg="white").pack(anchor="w")
         e_stok = tk.Entry(form, font=("Segoe UI", 11), relief="solid", bd=1)
         e_stok.pack(fill=tk.X, pady=(2, 15), ipady=3)
+
+
 
         def simpan_stok_db():
             kode = e_kode.get().strip().upper()
@@ -221,6 +234,7 @@ class AplikasiKasirModern:
 
         btn_simpan = tk.Button(form, text="Simpan Data", bg=self.warna_success, fg="white", font=("Segoe UI", 10, "bold"), relief="flat", pady=8, cursor="hand2", command=simpan_stok_db)
         btn_simpan.pack(fill=tk.X, pady=5)
+
 
     def tambah_ke_keranjang(self):
         selected_item = self.tree_produk.selection()
@@ -272,6 +286,7 @@ class AplikasiKasirModern:
         del self.keranjang[index]
         self.update_tampilan_keranjang()
 
+
     def update_tampilan_keranjang(self):
         for item in self.tree_keranjang.get_children():
             self.tree_keranjang.delete(item)
@@ -283,8 +298,10 @@ class AplikasiKasirModern:
             
         self.lbl_total_val.config(text=f"Rp {total_belanja:,}")
 
+
     def hitung_total_belanja(self):
         return sum(item['subtotal'] for item in self.keranjang)
+
 
     def proses_transaksi(self):
         if not self.keranjang:
@@ -311,6 +328,7 @@ class AplikasiKasirModern:
             cursor.execute("UPDATE produk SET stok = stok - ? WHERE kode = ?", (item['jumlah'], item['kode']))
         conn.commit()
         conn.close()
+
 
         # Cetak Struk Bluetooth
         self.cetak_ke_bluetooth_thermal(total_belanja, bayar, kembalian)
@@ -354,6 +372,7 @@ class AplikasiKasirModern:
                 struk_data.extend(f"{item['nama'][:32]}\n".encode('utf-8'))
                 struk_data.extend(f"  {item['jumlah']} x {item['harga']:,} = {item['subtotal']:,}\n".encode('utf-8'))
             
+            
             struk_data.extend(("-" * 32 + "\n").encode('utf-8'))
             struk_data.extend(BOLD_ON)
             struk_data.extend(f"TOTAL   : Rp {total_belanja:,}\n".encode('utf-8'))
@@ -361,9 +380,10 @@ class AplikasiKasirModern:
             struk_data.extend(f"KEMBALI : Rp {kembalian:,}\n".encode('utf-8'))
             struk_data.extend(BOLD_OFF)
             
+            
             struk_data.extend(("-" * 32 + "\n").encode('utf-8'))
             struk_data.extend(ALIGN_CENTER)
-            struk_data.extend("Terima Kasih Atas Kunjungan Anda!\nBarang yg dibeli tdk dapat ditukar.\n\n\n".encode('utf-8'))
+            struk_data.extend("Terima Kasih Atas Kunjungan Anda!\nBarang yg sudah dibeli tidak dapat ditukar dan dikembalikan.\n\n\n".encode('utf-8'))
             struk_data.extend(CUT_PAPER)
 
             printer.write(struk_data)
@@ -371,8 +391,10 @@ class AplikasiKasirModern:
             
         except Exception as e:
             messagebox.showwarning("Peringatan Printer", f"Transaksi sukses, tetapi gagal cetak struk Bluetooth:\n{e}")
-
+            
+            
 if __name__ == "__main__":
     root = tk.Tk()
     app = AplikasiKasirModern(root)
     root.mainloop()
+    
